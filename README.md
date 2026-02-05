@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SmileCare Dental Clinic Website
+
+A modern, production-ready dental clinic website built with Next.js 14, TypeScript, TailwindCSS, and Supabase.
+
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38bdf8)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e)
+
+## Features
+
+### Public Website
+- **Homepage** - Hero section, services preview, team, testimonials
+- **About** - Clinic story, mission, values, statistics
+- **Services** - Full service catalog with pricing
+- **Team** - Doctor profiles with credentials
+- **Contact** - Contact form, office information, emergency CTA
+- **Booking** - Multi-step appointment wizard with calendar
+- **Blog** - Article listing and individual post pages
+- **Legal** - Privacy policy and terms of service
+
+### Admin Dashboard
+- **Dashboard** - Overview stats, today's appointments, recent patients
+- **Appointments** - Search, filter, manage all appointments
+- **Services** - CRUD operations for dental services
+- **Availability** - Weekly calendar slot management
+- **Patients** - Patient records management
+- **Blog** - Create and manage blog posts
+- **Settings** - Clinic configuration
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: TailwindCSS
+- **Database**: Supabase (PostgreSQL)
+- **Icons**: Lucide React
+- **Date Handling**: date-fns
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+
+- npm or yarn
+- Supabase account
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/dental-clinic.git
+cd dental-clinic
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Add your Supabase credentials to `.env.local`:
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
 
-## Learn More
+5. Run the database migration in your Supabase SQL editor:
+```sql
+-- Copy contents from supabase/migrations/001_initial_schema.sql
+```
 
-To learn more about Next.js, take a look at the following resources:
+6. Start the development server:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+7. Open [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/
+│   ├── (public)/          # Public pages (home, about, services, etc.)
+│   ├── admin/             # Admin dashboard pages
+│   ├── globals.css        # Global styles
+│   └── layout.tsx         # Root layout
+├── components/
+│   ├── booking/           # Booking-specific components
+│   ├── layout/            # Header, Footer
+│   └── ui/                # Reusable UI components
+├── lib/
+│   ├── constants.ts       # Site configuration and data
+│   ├── supabase/          # Supabase client setup
+│   └── utils.ts           # Utility functions
+├── types/
+│   └── index.ts           # TypeScript interfaces
+└── supabase/
+    └── migrations/        # Database schema
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import the repository in Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy!
+
+### Environment Variables for Production
+
+Set these in your Vercel project settings:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+## Database Setup
+
+1. Create a new Supabase project
+2. Go to SQL Editor
+3. Run the migration file: `supabase/migrations/001_initial_schema.sql`
+4. This will create all tables, RLS policies, and seed data
+
+## License
+
+MIT
