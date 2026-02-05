@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { Button, Card, CardContent, Badge } from "@/components/ui";
-import { DOCTORS_DATA } from "@/lib/constants";
+import { getDoctors } from "@/lib/actions/doctors";
 import { Calendar, GraduationCap, Award, Users } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
         "Meet our team of experienced dental professionals at SmileCare Dental Clinic. Our board-certified dentists are dedicated to providing exceptional care.",
 };
 
-export default function TeamPage() {
+export const dynamic = "force-dynamic";
+
+export default async function TeamPage() {
+    const doctors = await getDoctors();
+
     return (
         <>
             {/* Hero Section */}
@@ -36,7 +40,7 @@ export default function TeamPage() {
             <section className="section-padding">
                 <div className="container mx-auto px-4">
                     <div className="grid md:grid-cols-2 gap-8">
-                        {DOCTORS_DATA.map((doctor) => (
+                        {doctors.map((doctor) => (
                             <Card key={doctor.id} className="overflow-hidden">
                                 <div className="grid md:grid-cols-2 h-full">
                                     <div className="h-80 md:h-auto bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center">
@@ -67,7 +71,7 @@ export default function TeamPage() {
                                         </div>
                                         <Link href="/booking">
                                             <Button variant="primary" size="sm" className="w-full">
-                                                Book with {doctor.name.split(" ")[1]}
+                                                Book with {doctor.name.split(" ")[1] || doctor.name}
                                             </Button>
                                         </Link>
                                     </CardContent>

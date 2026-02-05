@@ -30,6 +30,14 @@ export interface Doctor {
     sortOrder?: number;
 }
 
+export interface DoctorVacation {
+    id: string;
+    doctorId: string;
+    startDate: string;
+    endDate: string;
+    reason?: string;
+}
+
 export interface AvailabilitySlot {
     id: string;
     doctorId: string;

@@ -24,6 +24,7 @@ const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/appointments", label: "Appointments", icon: Calendar },
     { href: "/admin/services", label: "Services", icon: Stethoscope },
+    { href: "/admin/doctors", label: "Doctors", icon: Users },
     { href: "/admin/availability", label: "Availability", icon: Clock },
     { href: "/admin/patients", label: "Patients", icon: Users },
     { href: "/admin/blog", label: "Blog Posts", icon: FileText },

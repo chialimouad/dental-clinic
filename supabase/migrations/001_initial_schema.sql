@@ -53,6 +53,18 @@ CREATE TABLE doctors (
 -- ============================================
 -- AVAILABILITY SLOTS TABLE
 -- ============================================
+CREATE TABLE doctor_vacations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    doctor_id UUID REFERENCES doctors(id) ON DELETE CASCADE,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    reason TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ============================================
+-- AVAILABILITY SLOTS TABLE
+-- ============================================
 CREATE TABLE availability_slots (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     doctor_id UUID REFERENCES doctors(id) ON DELETE CASCADE,
@@ -156,6 +168,8 @@ CREATE TABLE testimonials (
 ALTER TABLE patients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE doctors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE doctors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE doctor_vacations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE availability_slots ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
@@ -250,6 +264,14 @@ CREATE POLICY "Admins can view contact messages" ON contact_messages
     );
 
 CREATE POLICY "Admins can do everything with testimonials" ON testimonials
+    FOR ALL USING (
+        EXISTS (
+            SELECT 1 FROM admin_users
+            WHERE admin_users.id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Admins can do everything with doctor_vacations" ON doctor_vacations
     FOR ALL USING (
         EXISTS (
             SELECT 1 FROM admin_users
