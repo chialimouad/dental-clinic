@@ -9,7 +9,7 @@ import {
     Edit,
     Trash2,
     Clock,
-    DollarSign,
+    IndianRupee,
     GripVertical,
     Stethoscope,
 } from "lucide-react";
@@ -112,7 +112,7 @@ export default function ServicesPage() {
                                 <h3 className="text-lg font-bold text-neutral-900">
                                     {service.title}
                                 </h3>
-                                <Badge variant="primary">${service.price}</Badge>
+                                <Badge variant="primary">₹{service.price}</Badge>
                             </div>
                             <p className="text-neutral-600 text-sm mb-4 line-clamp-2">
                                 {service.description}
@@ -123,8 +123,8 @@ export default function ServicesPage() {
                                     <span>{service.duration} min</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <DollarSign className="h-4 w-4" />
-                                    <span>${service.price}</span>
+                                    <IndianRupee className="h-4 w-4" />
+                                    <span>{service.price}</span>
                                 </div>
                             </div>
                             <div className="flex gap-2">
@@ -192,7 +192,7 @@ export default function ServicesPage() {
                             }
                         />
                         <Input
-                            label="Price ($)"
+                            label="Price (₹)"
                             type="number"
                             value={formData.price}
                             onChange={(e) =>

@@ -4,7 +4,7 @@ import { Card, Badge } from "@/components/ui";
 import {
     Calendar,
     Users,
-    DollarSign,
+    IndianRupee,
     TrendingUp,
     Clock,
     CheckCircle,
@@ -34,10 +34,10 @@ const stats = [
     },
     {
         title: "Revenue (Month)",
-        value: "$24,590",
+        value: "₹24,59,000",
         change: "+12%",
         trend: "up",
-        icon: DollarSign,
+        icon: IndianRupee,
         color: "accent",
     },
     {
@@ -56,7 +56,7 @@ const todaysAppointments = [
         patient: "Jennifer Adams",
         service: "Teeth Whitening",
         time: "09:00 AM",
-        doctor: "Dr. Sarah Mitchell",
+        doctor: "Dr. Priya Patel",
         status: "completed",
     },
     {
@@ -64,7 +64,7 @@ const todaysAppointments = [
         patient: "Robert Martinez",
         service: "General Checkup",
         time: "10:30 AM",
-        doctor: "Dr. Sarah Mitchell",
+        doctor: "Dr. Priya Patel",
         status: "completed",
     },
     {
@@ -72,7 +72,7 @@ const todaysAppointments = [
         patient: "Sarah Kim",
         service: "Dental Cleaning",
         time: "11:30 AM",
-        doctor: "Dr. Emily Rodriguez",
+        doctor: "Dr. Anjali Mehta",
         status: "in-progress",
     },
     {
@@ -80,7 +80,7 @@ const todaysAppointments = [
         patient: "David Wilson",
         service: "Root Canal",
         time: "02:00 PM",
-        doctor: "Dr. Michael Thompson",
+        doctor: "Dr. Vikram Shah",
         status: "pending",
     },
     {
@@ -88,7 +88,7 @@ const todaysAppointments = [
         patient: "Emily Chen",
         service: "Orthodontics Consultation",
         time: "03:30 PM",
-        doctor: "Dr. James Chen",
+        doctor: "Dr. Rajesh Kumar",
         status: "pending",
     },
 ];
@@ -150,12 +150,12 @@ export default function AdminDashboard() {
                             </div>
                             <div
                                 className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.color === "primary"
-                                        ? "bg-primary-100 text-primary-600"
-                                        : stat.color === "secondary"
-                                            ? "bg-secondary-100 text-secondary-600"
-                                            : stat.color === "accent"
-                                                ? "bg-accent-100 text-accent-600"
-                                                : "bg-green-100 text-green-600"
+                                    ? "bg-primary-100 text-primary-600"
+                                    : stat.color === "secondary"
+                                        ? "bg-secondary-100 text-secondary-600"
+                                        : stat.color === "accent"
+                                            ? "bg-accent-100 text-accent-600"
+                                            : "bg-green-100 text-green-600"
                                     }`}
                             >
                                 <stat.icon className="h-6 w-6" />

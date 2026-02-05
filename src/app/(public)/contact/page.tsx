@@ -242,15 +242,15 @@ export default function ContactPage() {
 
             {/* Map Section */}
             <section className="h-96 bg-neutral-200">
-                <div className="w-full h-full flex items-center justify-center text-neutral-500">
-                    <div className="text-center">
-                        <MapPin className="h-16 w-16 mx-auto mb-4" />
-                        <p className="text-lg font-medium">Interactive Map</p>
-                        <p className="text-sm">
-                            Google Maps integration would go here
-                        </p>
-                    </div>
-                </div>
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.65437936136!2d72.52735747514304!3d23.036329079164223!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84c715555555%3A0x7c7c7c7c7c7c7c7c!2sTitanium%20City%20Center%20Business%20Park!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    className="w-full h-full grayscale hover:grayscale-0 transition-all duration-500"
+                ></iframe>
             </section>
 
             {/* Emergency CTA */}

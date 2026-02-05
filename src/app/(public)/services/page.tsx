@@ -5,7 +5,7 @@ import { SERVICES_DATA } from "@/lib/constants";
 import {
     Calendar,
     Clock,
-    DollarSign,
+    IndianRupee,
     ArrowRight,
     Stethoscope,
     Sparkles,
@@ -86,8 +86,8 @@ export default function ServicesPage() {
                                                         <span>{service.duration} minutes</span>
                                                     </div>
                                                     <div className="flex items-center gap-2 text-sm text-neutral-600">
-                                                        <DollarSign className="h-4 w-4 text-primary-500" />
-                                                        <span>Starting from ${service.price}</span>
+                                                        <IndianRupee className="h-4 w-4 text-primary-500" />
+                                                        <span>Starting from ₹{service.price}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -202,12 +202,12 @@ export default function ServicesPage() {
                                 New Patient Special
                             </h3>
                             <div className="text-5xl font-bold text-primary-600 mb-2">
-                                $99
+                                ₹999
                             </div>
                             <p className="text-neutral-600 mb-6">
                                 Comprehensive exam, X-rays, and cleaning
                                 <br />
-                                <span className="text-sm">(Regular value $300)</span>
+                                <span className="text-sm">(Regular value ₹3000)</span>
                             </p>
                             <Link href="/booking">
                                 <Button variant="primary" size="lg">

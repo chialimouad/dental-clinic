@@ -2,7 +2,7 @@
 
 import { Service } from "@/types";
 import { cn } from "@/lib/utils";
-import { Clock, DollarSign, Check } from "lucide-react";
+import { Clock, IndianRupee, Check } from "lucide-react";
 
 interface ServiceSelectorProps {
     services: Service[];
@@ -51,8 +51,8 @@ export function ServiceSelector({
                                         <span>{service.duration} min</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-sm font-medium text-primary-600">
-                                        <DollarSign className="h-4 w-4" />
-                                        <span>${service.price}</span>
+                                        <IndianRupee className="h-4 w-4" />
+                                        <span>{service.price}</span>
                                     </div>
                                 </div>
                             </div>

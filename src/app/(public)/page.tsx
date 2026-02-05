@@ -38,7 +38,7 @@ export default function HomePage() {
                         {/* Hero Content */}
                         <div className="text-white animate-fade-in">
                             <Badge variant="accent" className="mb-6 text-sm">
-                                ✨ #1 Rated Dental Clinic in Los Angeles
+                                ✨ #1 Rated Dental Clinic in Ahmedabad
                             </Badge>
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                                 Your Perfect Smile{" "}
@@ -250,7 +250,7 @@ export default function HomePage() {
                                     </p>
                                     <div className="flex items-center justify-between">
                                         <span className="text-primary-600 font-bold">
-                                            From ${service.price}
+                                            From ₹{service.price}
                                         </span>
                                         <Link
                                             href={`/services#${service.id}`}
@@ -447,7 +447,7 @@ export default function HomePage() {
                                 closes: "15:00",
                             },
                         ],
-                        priceRange: "$$",
+                        priceRange: "₹₹",
                         medicalSpecialty: "Dentistry",
                         availableService: SERVICES_DATA.map((service) => ({
                             "@type": "MedicalProcedure",

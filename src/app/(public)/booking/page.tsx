@@ -148,16 +148,16 @@ export default function BookingPage() {
                             >
                                 <div
                                     className={`flex items-center gap-2 ${currentStep >= step.id
-                                            ? "text-primary-600"
-                                            : "text-neutral-400"
+                                        ? "text-primary-600"
+                                        : "text-neutral-400"
                                         }`}
                                 >
                                     <div
                                         className={`w-10 h-10 rounded-full flex items-center justify-center ${currentStep > step.id
-                                                ? "bg-primary-600 text-white"
-                                                : currentStep === step.id
-                                                    ? "bg-primary-100 text-primary-600 border-2 border-primary-600"
-                                                    : "bg-neutral-100 text-neutral-400"
+                                            ? "bg-primary-600 text-white"
+                                            : currentStep === step.id
+                                                ? "bg-primary-100 text-primary-600 border-2 border-primary-600"
+                                                : "bg-neutral-100 text-neutral-400"
                                             }`}
                                     >
                                         {currentStep > step.id ? (
@@ -207,8 +207,8 @@ export default function BookingPage() {
                                             <button
                                                 onClick={() => setSelectedDoctor(null)}
                                                 className={`p-4 rounded-xl border-2 text-left transition-all ${selectedDoctor === null
-                                                        ? "border-primary-600 bg-primary-50"
-                                                        : "border-neutral-200 bg-white hover:border-primary-300"
+                                                    ? "border-primary-600 bg-primary-50"
+                                                    : "border-neutral-200 bg-white hover:border-primary-300"
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-3">
@@ -230,8 +230,8 @@ export default function BookingPage() {
                                                     key={doctor.id}
                                                     onClick={() => setSelectedDoctor(doctor.id)}
                                                     className={`p-4 rounded-xl border-2 text-left transition-all ${selectedDoctor === doctor.id
-                                                            ? "border-primary-600 bg-primary-50"
-                                                            : "border-neutral-200 bg-white hover:border-primary-300"
+                                                        ? "border-primary-600 bg-primary-50"
+                                                        : "border-neutral-200 bg-white hover:border-primary-300"
                                                         }`}
                                                 >
                                                     <div className="flex items-center gap-3">
@@ -383,7 +383,7 @@ export default function BookingPage() {
                                                         Estimated Cost:
                                                     </span>
                                                     <span className="font-bold text-primary-600">
-                                                        ${selectedServiceData?.price}
+                                                        ₹{selectedServiceData?.price}
                                                     </span>
                                                 </div>
                                                 <p className="text-sm text-neutral-500 mt-2">
