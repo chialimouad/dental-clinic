@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { Card, Button, Badge, Input, Modal, Textarea } from "@/components/ui";
+import { Card, Button, Input, Modal, Textarea, ImageUpload } from "@/components/ui";
 import { Doctor, DoctorVacation } from "@/types";
 import {
     createDoctor,
@@ -38,6 +38,7 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
         bio: "",
         education: "",
         specializations: "",
+        image: "",
     });
 
     // Vacation State
@@ -74,13 +75,14 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
             bio: doctor.bio,
             education: doctor.education || "",
             specializations: doctor.specializations.join(", "),
+            image: doctor.image || "",
         });
         setShowDoctorModal(true);
     };
 
     const handleAddDoctor = () => {
         setEditingDoctor(null);
-        setDoctorForm({ name: "", title: "", bio: "", education: "", specializations: "" });
+        setDoctorForm({ name: "", title: "", bio: "", education: "", specializations: "", image: "" });
         setShowDoctorModal(true);
     };
 
@@ -101,7 +103,7 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
                     await createDoctor({
                         ...doctorForm,
                         specializations: specializationsArray,
-                        image: "/images/team/placeholder.jpg", // Default or upload later
+                        image: doctorForm.image || "/images/team/placeholder.jpg",
                         isActive: true,
                         sortOrder: 0,
                     });
@@ -150,8 +152,6 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
             return;
         }
 
-        // Basic optimistic update or just wait for reload?
-        // Since getDoctorVacations is called on mount, we can reload it manually.
         startTransition(async () => {
             try {
                 await addDoctorVacation({
@@ -160,9 +160,9 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
                     endDate: vacationForm.endDate,
                     reason: vacationForm.reason,
                 });
-                await loadVacations(selectedDoctorForVacation.id); // Reload list
+                await loadVacations(selectedDoctorForVacation.id);
                 setVacationForm({ startDate: "", endDate: "", reason: "" });
-                alert("Vacation added and availability slots cleared for this period.");
+                alert("Vacation added. Availability slots in this period have been removed.");
             } catch (error) {
                 console.error(error);
                 alert("Failed to add vacation");
@@ -172,7 +172,7 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
 
     const handleDeleteVacation = async (id: string) => {
         if (!selectedDoctorForVacation) return;
-        if (confirm("Remove this vacation? Note: Availability slots specifically for this period won't be automatically recreated. You may need to regenerate slots.")) {
+        if (confirm("Remove this vacation? availability slots won't be automatically regenerated.")) {
             startTransition(async () => {
                 await deleteDoctorVacation(id);
                 await loadVacations(selectedDoctorForVacation.id);
@@ -206,8 +206,12 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
                     <Card key={doc.id} className="overflow-hidden">
                         <div className="p-6">
                             <div className="flex items-center gap-4 mb-4">
-                                <div className="h-16 w-16 bg-neutral-100 rounded-full flex items-center justify-center">
-                                    <User className="h-8 w-8 text-neutral-400" />
+                                <div className="h-16 w-16 bg-neutral-100 rounded-full flex items-center justify-center overflow-hidden">
+                                    {doc.image && doc.image !== "/images/team/placeholder.jpg" ? (
+                                        <img src={doc.image} alt={doc.name} className="h-full w-full object-cover" />
+                                    ) : (
+                                        <User className="h-8 w-8 text-neutral-400" />
+                                    )}
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold">{doc.name}</h3>
@@ -240,6 +244,12 @@ export default function DoctorsClient({ initialDoctors }: DoctorsClientProps) {
                 title={editingDoctor ? "Edit Doctor" : "Add Doctor"}
             >
                 <div className="space-y-4">
+                    <ImageUpload
+                        value={doctorForm.image}
+                        onChange={(url) => setDoctorForm({ ...doctorForm, image: url })}
+                        onRemove={() => setDoctorForm({ ...doctorForm, image: "" })}
+                        label="Profile Photo"
+                    />
                     <Input label="Name" value={doctorForm.name} onChange={(e) => setDoctorForm({ ...doctorForm, name: e.target.value })} placeholder="Dr. Name" />
                     <Input label="Title" value={doctorForm.title} onChange={(e) => setDoctorForm({ ...doctorForm, title: e.target.value })} placeholder="e.g. Lead Dentist" />
                     <Textarea label="Bio" value={doctorForm.bio} onChange={(e) => setDoctorForm({ ...doctorForm, bio: e.target.value })} />

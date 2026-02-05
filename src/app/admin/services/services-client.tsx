@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Card, Button, Badge, Input, Modal, Textarea } from "@/components/ui";
+import { Card, Button, Badge, Input, Modal, Textarea, ImageUpload } from "@/components/ui";
 import { Service } from "@/types";
 import { createService, updateService, deleteService } from "@/lib/actions/services";
 import {
@@ -29,18 +29,12 @@ export default function ServicesClient({ initialServices }: ServicesClientProps)
         description: "",
         duration: 60,
         price: 0,
+        image: "",
     });
 
     const [isPending, startTransition] = useTransition();
 
-    // Update local state when initialServices changes (e.g. after revalidation)
-    // Actually, simply using initialServices might be enough if the parent re-renders, 
-    // but filtering logic relies on a list. 
-    // Best pattern: use optimistic UI or just rely on parent re-render.
-    // For simplicity, I'll derive filtered list from `initialServices` prop directly if no optimistic updates,
-    // OR I will sync state. 
-    // Given revalidatePath reload the page, `initialServices` will update.
-    // So I should use `initialServices` directly for rendering.
+    // Use initialServices from props as source of truth (updated by server actions revalidating path)
 
     const filteredServices = initialServices.filter(
         (service) =>
@@ -55,13 +49,14 @@ export default function ServicesClient({ initialServices }: ServicesClientProps)
             description: service.description,
             duration: service.duration,
             price: service.price,
+            image: service.image || "",
         });
         setShowAddModal(true);
     };
 
     const handleAdd = () => {
         setEditingService(null);
-        setFormData({ title: "", description: "", duration: 60, price: 0 });
+        setFormData({ title: "", description: "", duration: 60, price: 0, image: "" });
         setShowAddModal(true);
     };
 
@@ -77,8 +72,7 @@ export default function ServicesClient({ initialServices }: ServicesClientProps)
                         ...formData,
                         sortOrder: 0,
                         isActive: true,
-                        // Default image/icon logic if needed
-                        icon: "Stethoscope"
+                        icon: "Stethoscope" // Default fallback
                     });
                 }
                 setShowAddModal(false);
@@ -132,8 +126,12 @@ export default function ServicesClient({ initialServices }: ServicesClientProps)
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredServices.map((service) => (
                     <Card key={service.id} className="overflow-hidden group">
-                        <div className="h-32 bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center">
-                            <Stethoscope className="h-12 w-12 text-primary-600" />
+                        <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center relative">
+                            {service.image ? (
+                                <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
+                            ) : (
+                                <Stethoscope className="h-16 w-16 text-primary-600 opacity-50" />
+                            )}
                         </div>
                         <div className="p-6">
                             <div className="flex items-start justify-between mb-4">
@@ -196,6 +194,12 @@ export default function ServicesClient({ initialServices }: ServicesClientProps)
                 size="md"
             >
                 <div className="space-y-4">
+                    <ImageUpload
+                        value={formData.image}
+                        onChange={(url) => setFormData({ ...formData, image: url })}
+                        onRemove={() => setFormData({ ...formData, image: "" })}
+                        label="Service Image"
+                    />
                     <Input
                         label="Service Title"
                         value={formData.title}

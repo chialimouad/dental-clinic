@@ -25,10 +25,10 @@ CREATE TABLE services (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
     description TEXT,
-    duration_minutes INTEGER NOT NULL DEFAULT 60,
+    duration INTEGER NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    image_url TEXT,
     icon TEXT,
+    image_url TEXT,
     is_active BOOLEAN DEFAULT true,
     sort_order INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

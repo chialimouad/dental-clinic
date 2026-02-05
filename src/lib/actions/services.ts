@@ -20,7 +20,7 @@ export async function getServices(): Promise<Service[]> {
         id: item.id,
         title: item.title,
         description: item.description,
-        duration: item.duration_minutes,
+        duration: item.duration,
         price: item.price,
         image: item.image_url,
         icon: item.icon,
@@ -34,7 +34,7 @@ export async function createService(service: Omit<Service, "id">) {
     const { error } = await supabase.from("services").insert({
         title: service.title,
         description: service.description,
-        duration_minutes: service.duration,
+        duration: service.duration,
         price: service.price,
         image_url: service.image,
         icon: service.icon,
@@ -51,7 +51,7 @@ export async function updateService(id: string, service: Partial<Service>) {
     const updates: any = {};
     if (service.title !== undefined) updates.title = service.title;
     if (service.description !== undefined) updates.description = service.description;
-    if (service.duration !== undefined) updates.duration_minutes = service.duration;
+    if (service.duration !== undefined) updates.duration = service.duration;
     if (service.price !== undefined) updates.price = service.price;
     if (service.image !== undefined) updates.image_url = service.image;
     if (service.icon !== undefined) updates.icon = service.icon;
