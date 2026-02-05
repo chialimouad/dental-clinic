@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { SITE_CONFIG } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 import {
     LayoutDashboard,
     Calendar,
@@ -17,7 +17,7 @@ import {
     Menu,
     X,
     Bell,
-    User,
+    User as UserIcon,
 } from "lucide-react";
 
 const navItems = [
@@ -36,7 +36,33 @@ export default function AdminLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
+    const [userEmail, setUserEmail] = React.useState("");
+
+    // Create supabase client once
+    const supabase = React.useMemo(() => createClient(), []);
+
+    React.useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.email) {
+                setUserEmail(user.email);
+            }
+        };
+        getUser();
+    }, [supabase]);
+
+    // If on login page, render only children (login form)
+    if (pathname === "/admin/login") {
+        return <>{children}</>;
+    }
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        router.push("/admin/login");
+        router.refresh();
+    };
 
     return (
         <div className="min-h-screen bg-neutral-50">
@@ -106,13 +132,13 @@ export default function AdminLayout({
 
                 {/* Logout */}
                 <div className="absolute bottom-4 left-4 right-4">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+                    <button
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
                     >
                         <LogOut className="h-5 w-5" />
-                        Back to Website
-                    </Link>
+                        Sign Out
+                    </button>
                 </div>
             </aside>
 
@@ -140,11 +166,11 @@ export default function AdminLayout({
                             {/* User Menu */}
                             <div className="flex items-center gap-3 pl-4 border-l border-neutral-200">
                                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center">
-                                    <User className="h-5 w-5 text-white" />
+                                    <UserIcon className="h-5 w-5 text-white" />
                                 </div>
                                 <div className="hidden md:block">
                                     <p className="text-sm font-medium text-neutral-900">Admin</p>
-                                    <p className="text-xs text-neutral-500">admin@smilecare.com</p>
+                                    <p className="text-xs text-neutral-500">{userEmail || "Loading..."}</p>
                                 </div>
                             </div>
                         </div>
