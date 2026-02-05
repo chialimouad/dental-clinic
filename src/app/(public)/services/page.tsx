@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { Button, Card, CardContent, Badge } from "@/components/ui";
-import { SERVICES_DATA } from "@/lib/constants";
+import { getServices } from "@/lib/actions/services";
 import {
     Calendar,
     Clock,
@@ -35,7 +35,12 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
     AlertCircle,
 };
 
-export default function ServicesPage() {
+// Force dynamic rendering so we always get fresh data
+export const dynamic = "force-dynamic";
+
+export default async function ServicesPage() {
+    const services = await getServices();
+
     return (
         <>
             {/* Hero Section */}
@@ -60,8 +65,8 @@ export default function ServicesPage() {
             <section className="section-padding">
                 <div className="container mx-auto px-4">
                     <div className="grid md:grid-cols-2 gap-8">
-                        {SERVICES_DATA.map((service) => {
-                            const IconComponent = iconMap[service.icon || "Stethoscope"];
+                        {services.map((service) => {
+                            const IconComponent = iconMap[service.icon || "Stethoscope"] || Stethoscope;
                             return (
                                 <Card
                                     key={service.id}

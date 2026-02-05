@@ -136,6 +136,19 @@ CREATE TABLE contact_messages (
 );
 
 -- ============================================
+-- TESTIMONIALS TABLE
+-- ============================================
+CREATE TABLE testimonials (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    text TEXT NOT NULL,
+    rating INTEGER DEFAULT 5,
+    treatment TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ============================================
 -- ROW LEVEL SECURITY POLICIES
 -- ============================================
 
@@ -148,6 +161,11 @@ ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+
+-- Public read access to testimonials
+CREATE POLICY "Testimonials are viewable by everyone" ON testimonials
+    FOR SELECT USING (is_active = true);
 
 -- Public read access to services
 CREATE POLICY "Services are viewable by everyone" ON services
@@ -227,6 +245,11 @@ CREATE POLICY "Admins can do everything with blog posts" ON blog_posts
     );
 
 CREATE POLICY "Admins can view contact messages" ON contact_messages
+            WHERE admin_users.id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Admins can do everything with testimonials" ON testimonials
     FOR ALL USING (
         EXISTS (
             SELECT 1 FROM admin_users
@@ -239,28 +262,38 @@ CREATE POLICY "Admins can view contact messages" ON contact_messages
 -- ============================================
 
 -- Insert sample services
+-- Insert sample services
 INSERT INTO services (title, description, duration_minutes, price, icon, sort_order) VALUES
-('General Dentistry', 'Comprehensive dental care including check-ups, cleanings, and preventive treatments to maintain your oral health.', 60, 150.00, 'Stethoscope', 1),
-('Teeth Whitening', 'Professional whitening treatments to brighten your smile and remove stains for a radiant, confident appearance.', 90, 350.00, 'Sparkles', 2),
-('Dental Implants', 'Permanent tooth replacement solution that looks, feels, and functions like natural teeth.', 120, 2500.00, 'Component', 3),
-('Orthodontics', 'Straighten your teeth with modern braces or clear aligners for a perfectly aligned smile.', 45, 5000.00, 'AlignCenter', 4),
-('Root Canal Treatment', 'Save your natural tooth with our gentle, effective root canal therapy performed with precision.', 90, 800.00, 'Heart', 5),
-('Cosmetic Dentistry', 'Transform your smile with veneers, bonding, and other cosmetic procedures for a stunning look.', 60, 1200.00, 'Gem', 6),
-('Pediatric Dentistry', 'Gentle, child-friendly dental care designed to make visits fun and stress-free for young patients.', 45, 120.00, 'Baby', 7),
-('Emergency Dental Care', 'Immediate attention for dental emergencies including severe pain, broken teeth, and infections.', 60, 200.00, 'AlertCircle', 8);
+('General Dentistry', 'Comprehensive dental care including check-ups, cleanings, and preventive treatments to maintain your oral health.', 60, 500.00, 'Stethoscope', 1),
+('Teeth Whitening', 'Professional whitening treatments to brighten your smile and remove stains for a radiant, confident appearance.', 90, 5000.00, 'Sparkles', 2),
+('Dental Implants', 'Permanent tooth replacement solution that looks, feels, and functions like natural teeth.', 120, 25000.00, 'Component', 3),
+('Orthodontics', 'Straighten your teeth with modern braces or clear aligners for a perfectly aligned smile.', 45, 40000.00, 'AlignCenter', 4),
+('Root Canal Treatment', 'Save your natural tooth with our gentle, effective root canal therapy performed with precision.', 90, 4000.00, 'Heart', 5),
+('Cosmetic Dentistry', 'Transform your smile with veneers, bonding, and other cosmetic procedures for a stunning look.', 60, 8000.00, 'Gem', 6),
+('Pediatric Dentistry', 'Gentle, child-friendly dental care designed to make visits fun and stress-free for young patients.', 45, 800.00, 'Baby', 7),
+('Emergency Dental Care', 'Immediate attention for dental emergencies including severe pain, broken teeth, and infections.', 60, 1000.00, 'AlertCircle', 8);
 
 -- Insert sample doctors
+-- Insert sample doctors
 INSERT INTO doctors (name, title, bio, specializations, education, sort_order) VALUES
-('Dr. Sarah Mitchell', 'Lead Dentist & Founder', 'With over 15 years of experience, Dr. Mitchell specializes in cosmetic and restorative dentistry. She founded SmileCare with a vision to provide exceptional dental care in a warm, welcoming environment.', ARRAY['Cosmetic Dentistry', 'Dental Implants', 'General Dentistry'], 'DDS, UCLA School of Dentistry', 1),
-('Dr. James Chen', 'Orthodontist', 'Dr. Chen is a board-certified orthodontist with expertise in Invisalign and traditional braces. He is passionate about creating beautiful, healthy smiles for patients of all ages.', ARRAY['Orthodontics', 'Invisalign', 'Pediatric Orthodontics'], 'DMD, Harvard School of Dental Medicine', 2),
-('Dr. Emily Rodriguez', 'Pediatric Dentist', 'Dr. Rodriguez loves working with children and has a special talent for making dental visits enjoyable. She focuses on preventive care and early intervention.', ARRAY['Pediatric Dentistry', 'Preventive Care', 'Sedation Dentistry'], 'DDS, NYU College of Dentistry', 3),
-('Dr. Michael Thompson', 'Oral Surgeon', 'Dr. Thompson brings 20 years of surgical expertise to our team. He specializes in dental implants, wisdom teeth extraction, and complex oral surgeries.', ARRAY['Oral Surgery', 'Dental Implants', 'Wisdom Teeth'], 'DMD, MD, University of Pennsylvania', 4);
+('Dr. Priya Patel', 'Lead Dentist & Founder', 'With over 15 years of experience, Dr. Patel specializes in cosmetic and restorative dentistry. She founded SmileCare to provide world-class dental care in Ahmedabad.', ARRAY['Cosmetic Dentistry', 'Dental Implants', 'General Dentistry'], 'MDS, Gujarat University', 1),
+('Dr. Rajesh Kumar', 'Orthodontist', 'Dr. Kumar is a certified orthodontist with expertise in Invisalign and traditional braces. He is passionate about creating beautiful, healthy smiles for patients of all ages.', ARRAY['Orthodontics', 'Invisalign', 'Pediatric Orthodontics'], 'MDS, AIIMS', 2),
+('Dr. Anjali Mehta', 'Pediatric Dentist', 'Dr. Mehta loves working with children and has a special talent for making dental visits enjoyable. She focuses on preventive care and early intervention.', ARRAY['Pediatric Dentistry', 'Preventive Care', 'Sedation Dentistry'], 'MDS, Manipal College of Dental Sciences', 3),
+('Dr. Vikram Shah', 'Oral Surgeon', 'Dr. Shah brings 20 years of surgical expertise to our team. He specializes in dental implants, wisdom teeth extraction, and complex oral surgeries.', ARRAY['Oral Surgery', 'Dental Implants', 'Wisdom Teeth'], 'MDS, Oral & Maxillofacial Surgery', 4);
 
 -- Insert sample blog posts
+-- Insert sample blog posts
 INSERT INTO blog_posts (title, slug, excerpt, content, tags, author, is_published, published_at) VALUES
-('10 Tips for Maintaining Healthy Teeth Between Visits', 'tips-for-healthy-teeth', 'Discover the best practices for keeping your teeth and gums healthy at home with these expert-approved tips.', E'# 10 Tips for Maintaining Healthy Teeth\n\nMaintaining good oral health between dental visits is crucial for a healthy smile. Here are our top tips:\n\n## 1. Brush Twice Daily\nUse a soft-bristled brush and fluoride toothpaste. Brush for at least two minutes, reaching all surfaces of your teeth.\n\n## 2. Floss Daily\nFlossing removes plaque and food particles from between teeth where your brush cant reach.\n\n## 3. Use Mouthwash\nAn antimicrobial mouthwash can help reduce plaque and prevent gum disease.\n\n## 4. Limit Sugary Foods\nSugar feeds bacteria that cause cavities. Opt for healthier snacks when possible.\n\n## 5. Stay Hydrated\nWater helps wash away food particles and keeps your mouth moist.\n\n## 6. Dont Skip Dental Visits\nRegular check-ups catch problems early when theyre easier to treat.\n\n## 7. Replace Your Toothbrush\nGet a new toothbrush every 3-4 months or when bristles become frayed.\n\n## 8. Consider Electric Toothbrush\nElectric toothbrushes can be more effective at removing plaque.\n\n## 9. Protect Your Teeth\nWear a mouthguard during sports and a night guard if you grind your teeth.\n\n## 10. Quit Smoking\nTobacco use increases risk of gum disease and oral cancer.', ARRAY['Oral Health', 'Prevention', 'Tips'], 'Dr. Sarah Mitchell', true, NOW() - INTERVAL '15 days'),
-('Understanding Dental Implants: A Complete Guide', 'understanding-dental-implants', 'Learn everything you need to know about dental implants, from the procedure to recovery and long-term care.', E'# Understanding Dental Implants\n\nDental implants are the gold standard for replacing missing teeth. This comprehensive guide covers everything you need to know.\n\n## What Are Dental Implants?\n\nDental implants are titanium posts surgically placed in the jawbone to serve as artificial tooth roots. They provide a permanent foundation for replacement teeth.\n\n## Benefits of Dental Implants\n\n- **Natural Appearance**: Look and feel like your own teeth\n- **Durability**: Can last a lifetime with proper care\n- **Improved Speech**: Unlike dentures, wont slip\n- **Easier Eating**: Function like natural teeth\n- **Bone Preservation**: Prevent bone loss in the jaw\n\n## The Implant Process\n\n### 1. Consultation\nYour dentist evaluates your oral health and creates a treatment plan.\n\n### 2. Implant Placement\nThe titanium post is surgically placed in your jawbone.\n\n### 3. Healing Period\n3-6 months for the implant to fuse with the bone (osseointegration).\n\n### 4. Abutment Placement\nA connector piece is attached to the implant.\n\n### 5. Crown Placement\nYour custom-made crown is attached, completing your new tooth.\n\n## Recovery and Care\n\nMost patients return to normal activities within a day or two. Follow your dentists post-operative instructions for best results.', ARRAY['Dental Implants', 'Procedures', 'Guide'], 'Dr. Michael Thompson', true, NOW() - INTERVAL '10 days'),
-('Is Invisalign Right for You? Pros and Cons Explained', 'invisalign-pros-and-cons', 'Considering clear aligners? We break down the advantages and limitations of Invisalign treatment.', E'# Is Invisalign Right for You?\n\nInvisalign has revolutionized orthodontic treatment with nearly invisible aligners. But is it the right choice for you?\n\n## What Is Invisalign?\n\nInvisalign uses a series of clear, custom-made aligners to gradually move your teeth into the desired position. Each set of aligners is worn for about two weeks before moving to the next set.\n\n## Pros of Invisalign\n\n### Nearly Invisible\nThe clear aligners are barely noticeable, making them popular with adults and teens.\n\n### Removable\nYou can remove them for eating, drinking, and special occasions.\n\n### Comfortable\nSmooth plastic aligners are more comfortable than metal braces.\n\n### Fewer Office Visits\nTypically require fewer check-ups than traditional braces.\n\n### Easy Oral Hygiene\nRemove aligners to brush and floss normally.\n\n## Cons of Invisalign\n\n### Discipline Required\nMust be worn 20-22 hours per day for effectiveness.\n\n### Not for All Cases\nSevere orthodontic issues may require traditional braces.\n\n### Cost\nCan be more expensive than traditional braces in some cases.\n\n### Temporary Discomfort\nSome pressure and discomfort when switching to new aligners.\n\n## Who Is a Good Candidate?\n\nInvisalign works well for:\n- Mild to moderate crowding\n- Gaps between teeth\n- Some bite issues\n- Adults and teens committed to wearing aligners as directed\n\nContact us for a consultation to see if Invisalign is right for you!', ARRAY['Orthodontics', 'Invisalign', 'Treatment Options'], 'Dr. James Chen', true, NOW() - INTERVAL '5 days');
+('10 Tips for Maintaining Healthy Teeth in Indian Diet', 'tips-for-healthy-teeth-indian-diet', 'Discover how to enjoy Indian cuisine while keeping your teeth and gums healthy with these expert tips.', E'# 10 Tips for Maintaining Healthy Teeth...', ARRAY['Oral Health', 'Diet', 'Tips'], 'Dr. Priya Patel', true, NOW() - INTERVAL '15 days'),
+('Understanding Dental Implants: A Complete Guide', 'understanding-dental-implants', 'Learn everything you need to know about dental implants, from the procedure to recovery and long-term care.', E'# Understanding Dental Implants...', ARRAY['Dental Implants', 'Procedures', 'Guide'], 'Dr. Vikram Shah', true, NOW() - INTERVAL '10 days'),
+('Is Invisalign Right for You? Pros and Cons Explained', 'invisalign-pros-and-cons', 'Considering clear aligners? We break down the advantages and limitations of Invisalign treatment.', E'# Is Invisalign Right for You?...', ARRAY['Orthodontics', 'Invisalign', 'Treatment Options'], 'Dr. Rajesh Kumar', true, NOW() - INTERVAL '5 days');
+
+-- Insert sample testimonials
+INSERT INTO testimonials (name, text, rating, treatment, is_active) VALUES
+('Amit Shah', 'SmileCare transformed my smile. Dr. Patel is incredibly professional and the facility is state-of-the-art. Highly recommended!', 5, 'Teeth Whitening', true),
+('Sneha Reddy', 'I was terrified of dentists until I came here. Dr. Kumar made me feel completely at ease. Best dental clinic in Ahmedabad.', 5, 'Orthodontics', true),
+('Rahul Sharma', 'My kids love coming to see Dr. Mehta. She is wonderful with children. The clinic is very clean and hygienic.', 5, 'Pediatric Dentistry', true),
+('Kavita Iyer', 'Got my dental implants done by Dr. Shah. The procedure was smooth and the results are fantastic. Great value for money.', 5, 'Dental Implants', true);
 
 -- Generate availability slots for the next 30 days
 DO $$
