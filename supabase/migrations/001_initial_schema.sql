@@ -266,25 +266,26 @@ INSERT INTO blog_posts (title, slug, excerpt, content, tags, author, is_publishe
 DO $$
 DECLARE
     doc RECORD;
-    current_date DATE := CURRENT_DATE;
-    end_date DATE := CURRENT_DATE + INTERVAL '30 days';
+    slot_date_var DATE := CURRENT_DATE;
+    end_date_var DATE := CURRENT_DATE + INTERVAL '30 days';
     slot_time TIME;
 BEGIN
     FOR doc IN SELECT id FROM doctors LOOP
-        WHILE current_date <= end_date LOOP
+        WHILE slot_date_var <= end_date_var LOOP
             -- Skip Sundays
-            IF EXTRACT(DOW FROM current_date) != 0 THEN
+            IF EXTRACT(DOW FROM slot_date_var) != 0 THEN
                 slot_time := '09:00:00';
                 -- Generate slots from 9 AM to 5 PM
                 WHILE slot_time < '17:00:00' LOOP
                     INSERT INTO availability_slots (doctor_id, slot_date, start_time, end_time, is_available)
-                    VALUES (doc.id, current_date, slot_time, slot_time + INTERVAL '30 minutes', true)
+                    VALUES (doc.id, slot_date_var, slot_time, slot_time + INTERVAL '30 minutes', true)
                     ON CONFLICT DO NOTHING;
                     slot_time := slot_time + INTERVAL '30 minutes';
                 END LOOP;
             END IF;
-            current_date := current_date + INTERVAL '1 day';
+            slot_date_var := slot_date_var + INTERVAL '1 day';
         END LOOP;
-        current_date := CURRENT_DATE;
+        slot_date_var := CURRENT_DATE;
     END LOOP;
 END $$;
+
