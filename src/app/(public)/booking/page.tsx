@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Button, Input, Card, Badge } from "@/components/ui";
+import { createAppointment } from "@/lib/actions/appointments";
 import { Calendar, TimeSlotPicker, ServiceSelector } from "@/components/booking";
 import { SERVICES_DATA, DOCTORS_DATA, SITE_CONFIG } from "@/lib/constants";
 import { generateTimeSlots, formatTime } from "@/lib/utils";
@@ -99,12 +100,31 @@ export default function BookingPage() {
     const handleSubmit = async () => {
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        try {
+            const result = await createAppointment({
+                patient_name: formData.name,
+                patient_email: formData.email,
+                patient_phone: formData.phone,
+                service_id: selectedService!,
+                doctor_id: selectedDoctor || undefined,
+                appointment_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
+                appointment_time: selectedTime || "",
+                notes: formData.notes,
+            });
 
-        setIsSubmitting(false);
-        setIsSuccess(true);
-        setCurrentStep(4);
+            if (result.success) {
+                setIsSuccess(true);
+                setCurrentStep(4);
+            } else {
+                console.error("Booking failed:", result.error);
+                alert("Failed to book appointment. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error submitting booking:", error);
+            alert("An unexpected error occurred.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const resetBooking = () => {
