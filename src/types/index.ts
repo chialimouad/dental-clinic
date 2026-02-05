@@ -71,12 +71,28 @@ export interface BlogPost {
     slug: string;
     excerpt: string;
     content: string;
-    featuredImage?: string;
+    coverImage?: string;
     tags: string[];
-    isPublished: boolean;
+    isPublished?: boolean;
     publishedAt?: string;
-    author?: string;
-    createdAt: string;
+    author: {
+        name: string;
+        avatar?: string;
+    };
+    date: string;
+    readTime?: string;
+    category?: string;
+}
+
+export interface Testimonial {
+    id: string;
+    name: string;
+    text: string;
+    rating: number;
+    treatment?: string;
+    image?: string;
+    isActive: boolean;
+    date: string;
 }
 
 export interface ContactFormData {

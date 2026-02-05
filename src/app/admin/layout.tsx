@@ -28,6 +28,7 @@ const navItems = [
     { href: "/admin/availability", label: "Availability", icon: Clock },
     { href: "/admin/patients", label: "Patients", icon: Users },
     { href: "/admin/blog", label: "Blog Posts", icon: FileText },
+    { href: "/admin/testimonials", label: "Testimonials", icon: FileText }, // Reusing FileText or use MessageSquare if imported
     { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

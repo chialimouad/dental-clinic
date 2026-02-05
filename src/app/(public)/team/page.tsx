@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
-    const doctors = await getDoctors();
+    const allDoctors = await getDoctors();
+    const doctors = allDoctors.filter(d => d.isActive);
 
     return (
         <>
@@ -39,46 +40,58 @@ export default async function TeamPage() {
             {/* Team Grid */}
             <section className="section-padding">
                 <div className="container mx-auto px-4">
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {doctors.map((doctor) => (
-                            <Card key={doctor.id} className="overflow-hidden">
-                                <div className="grid md:grid-cols-2 h-full">
-                                    <div className="h-80 md:h-auto bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center">
-                                        <Users className="h-32 w-32 text-primary-600" />
-                                    </div>
-                                    <CardContent className="p-6">
-                                        <h3 className="text-2xl font-bold text-neutral-900 mb-1">
-                                            {doctor.name}
-                                        </h3>
-                                        <p className="text-primary-600 font-medium mb-4">
-                                            {doctor.title}
-                                        </p>
-                                        <p className="text-neutral-600 mb-4 text-sm leading-relaxed">
-                                            {doctor.bio}
-                                        </p>
-                                        <div className="mb-4">
-                                            <div className="flex items-center gap-2 text-sm text-neutral-600 mb-2">
-                                                <GraduationCap className="h-4 w-4 text-primary-500" />
-                                                <span>{doctor.education}</span>
+                    {doctors.length > 0 ? (
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {doctors.map((doctor) => (
+                                <Card key={doctor.id} className="overflow-hidden">
+                                    <div className="grid md:grid-cols-2 h-full">
+                                        <div className="h-80 md:h-auto bg-neutral-200 flex items-center justify-center relative overflow-hidden">
+                                            {doctor.image ? (
+                                                <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <Users className="h-32 w-32 text-primary-600 opacity-50" />
+                                            )}
+                                        </div>
+                                        <CardContent className="p-6 flex flex-col justify-center">
+                                            <h3 className="text-2xl font-bold text-neutral-900 mb-1">
+                                                {doctor.name}
+                                            </h3>
+                                            <p className="text-primary-600 font-medium mb-4">
+                                                {doctor.title}
+                                            </p>
+                                            <p className="text-neutral-600 mb-4 text-sm leading-relaxed line-clamp-4">
+                                                {doctor.bio}
+                                            </p>
+                                            <div className="mb-4">
+                                                <div className="flex items-center gap-2 text-sm text-neutral-600 mb-2">
+                                                    <GraduationCap className="h-4 w-4 text-primary-500" />
+                                                    <span>{doctor.education}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2 mb-6">
-                                            {doctor.specializations.map((spec) => (
-                                                <Badge key={spec} variant="outline" className="text-xs">
-                                                    {spec}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                        <Link href="/booking">
-                                            <Button variant="primary" size="sm" className="w-full">
-                                                Book with {doctor.name.split(" ")[1] || doctor.name}
-                                            </Button>
-                                        </Link>
-                                    </CardContent>
-                                </div>
-                            </Card>
-                        ))}
-                    </div>
+                                            <div className="flex flex-wrap gap-2 mb-6">
+                                                {doctor.specializations.slice(0, 3).map((spec) => (
+                                                    <Badge key={spec} variant="outline" className="text-xs">
+                                                        {spec}
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                            <div className="mt-auto">
+                                                <Link href="/booking">
+                                                    <Button variant="primary" size="sm" className="w-full">
+                                                        Book with {doctor.name.split(" ")[1] || doctor.name}
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </CardContent>
+                                    </div>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-neutral-500 py-12">
+                            <p>No team members found.</p>
+                        </div>
+                    )}
                 </div>
             </section>
 

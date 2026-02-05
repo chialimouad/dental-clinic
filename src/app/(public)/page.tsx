@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { Button, Card, CardContent, Badge } from "@/components/ui";
-import {
-    SERVICES_DATA,
-    DOCTORS_DATA,
-    TESTIMONIALS,
-    SITE_CONFIG,
-} from "@/lib/constants";
+import { SITE_CONFIG } from "@/lib/constants";
+import { getServices } from "@/lib/actions/services";
+import { getDoctors } from "@/lib/actions/doctors";
+import { getTestimonials } from "@/lib/actions/testimonials";
 import {
     Calendar,
     Phone,
@@ -22,7 +20,19 @@ import {
     Quote,
 } from "lucide-react";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+    const [services, doctors, testimonials] = await Promise.all([
+        getServices(),
+        getDoctors(),
+        getTestimonials()
+    ]);
+
+    const activeServices = services.filter(s => s.isActive).slice(0, 8);
+    const activeDoctors = doctors.filter(d => d.isActive).slice(0, 4);
+    const activeTestimonials = testimonials.filter(t => t.isActive).slice(0, 4);
+
     return (
         <>
             {/* Hero Section */}
@@ -109,6 +119,7 @@ export default function HomePage() {
                             <div className="relative w-full h-[600px] rounded-3xl overflow-hidden shadow-2xl">
                                 <div className="absolute inset-0 bg-gradient-to-t from-primary-900/50 to-transparent z-10" />
                                 <div className="w-full h-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center">
+                                    {/* Placeholder SVG or maybe a hero image from logic? For now Keep SVG */}
                                     <svg
                                         className="w-48 h-48 text-white/50"
                                         fill="currentColor"
@@ -236,33 +247,41 @@ export default function HomePage() {
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {SERVICES_DATA.slice(0, 8).map((service) => (
-                            <Card key={service.id} hover className="group">
-                                <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center">
-                                    <Stethoscope className="h-16 w-16 text-primary-600 group-hover:scale-110 transition-transform" />
-                                </div>
-                                <CardContent className="pt-6">
-                                    <h3 className="text-lg font-bold text-neutral-900 mb-2">
-                                        {service.title}
-                                    </h3>
-                                    <p className="text-neutral-600 text-sm mb-4 line-clamp-2">
-                                        {service.description}
-                                    </p>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-primary-600 font-bold">
-                                            From ₹{service.price}
-                                        </span>
-                                        <Link
-                                            href={`/services#${service.id}`}
-                                            className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1"
-                                        >
-                                            Learn more
-                                            <ArrowRight className="h-4 w-4" />
-                                        </Link>
+                        {activeServices.length > 0 ? (
+                            activeServices.map((service) => (
+                                <Card key={service.id} hover className="group">
+                                    <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center overflow-hidden">
+                                        {service.image ? (
+                                            <img src={service.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" alt={service.title} />
+                                        ) : (
+                                            <Stethoscope className="h-16 w-16 text-primary-600 group-hover:scale-110 transition-transform" />
+                                        )}
                                     </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                    <CardContent className="pt-6">
+                                        <h3 className="text-lg font-bold text-neutral-900 mb-2">
+                                            {service.title}
+                                        </h3>
+                                        <p className="text-neutral-600 text-sm mb-4 line-clamp-2">
+                                            {service.description}
+                                        </p>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-primary-600 font-bold">
+                                                From ₹{service.price}
+                                            </span>
+                                            <Link
+                                                href={`/services#${service.id}`}
+                                                className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1"
+                                            >
+                                                Learn more
+                                                <ArrowRight className="h-4 w-4" />
+                                            </Link>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        ) : (
+                            <p className="text-center col-span-4 text-neutral-500">No services available.</p>
+                        )}
                     </div>
 
                     <div className="text-center mt-12">
@@ -292,28 +311,36 @@ export default function HomePage() {
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {DOCTORS_DATA.map((doctor) => (
-                            <Card key={doctor.id} hover className="text-center">
-                                <div className="h-64 bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center">
-                                    <Users className="h-24 w-24 text-primary-600" />
-                                </div>
-                                <CardContent className="pt-6">
-                                    <h3 className="text-xl font-bold text-neutral-900">
-                                        {doctor.name}
-                                    </h3>
-                                    <p className="text-primary-600 font-medium mb-3">
-                                        {doctor.title}
-                                    </p>
-                                    <div className="flex flex-wrap gap-2 justify-center">
-                                        {doctor.specializations.slice(0, 2).map((spec) => (
-                                            <Badge key={spec} variant="outline" className="text-xs">
-                                                {spec}
-                                            </Badge>
-                                        ))}
+                        {activeDoctors.length > 0 ? (
+                            activeDoctors.map((doctor) => (
+                                <Card key={doctor.id} hover className="text-center overflow-hidden">
+                                    <div className="h-64 bg-neutral-200 flex items-center justify-center relative">
+                                        {doctor.image ? (
+                                            <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <Users className="h-24 w-24 text-primary-600 opacity-50" />
+                                        )}
                                     </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                    <CardContent className="pt-6">
+                                        <h3 className="text-xl font-bold text-neutral-900">
+                                            {doctor.name}
+                                        </h3>
+                                        <p className="text-primary-600 font-medium mb-3">
+                                            {doctor.title}
+                                        </p>
+                                        <div className="flex flex-wrap gap-2 justify-center">
+                                            {doctor.specializations.slice(0, 2).map((spec) => (
+                                                <Badge key={spec} variant="outline" className="text-xs">
+                                                    {spec}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        ) : (
+                            <p className="text-center col-span-4 text-neutral-500">Meet our team soon.</p>
+                        )}
                     </div>
 
                     <div className="text-center mt-12">
@@ -343,32 +370,40 @@ export default function HomePage() {
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {TESTIMONIALS.map((testimonial) => (
-                            <Card key={testimonial.id} className="p-6">
-                                <Quote className="h-10 w-10 text-primary-200 mb-4" />
-                                <p className="text-neutral-700 mb-6 italic">
-                                    &ldquo;{testimonial.text}&rdquo;
-                                </p>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center text-white font-bold">
-                                        {testimonial.name.charAt(0)}
+                        {activeTestimonials.length > 0 ? (
+                            activeTestimonials.map((testimonial) => (
+                                <Card key={testimonial.id} className="p-6">
+                                    <Quote className="h-10 w-10 text-primary-200 mb-4" />
+                                    <p className="text-neutral-700 mb-6 italic line-clamp-4">
+                                        &ldquo;{testimonial.text}&rdquo;
+                                    </p>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center text-primary-600 font-bold overflow-hidden">
+                                            {testimonial.image ? (
+                                                <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span>{testimonial.name.charAt(0)}</span>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-neutral-900 text-sm">
+                                                {testimonial.name}
+                                            </p>
+                                            <p className="text-xs text-neutral-500">
+                                                {testimonial.treatment}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-bold text-neutral-900">
-                                            {testimonial.name}
-                                        </p>
-                                        <p className="text-sm text-neutral-500">
-                                            {testimonial.treatment}
-                                        </p>
+                                    <div className="flex items-center gap-1 mt-4 text-yellow-400">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star key={i} className={`h-4 w-4 ${i < testimonial.rating ? "fill-current" : "text-gray-300 fill-none"}`} />
+                                        ))}
                                     </div>
-                                </div>
-                                <div className="flex items-center gap-1 mt-4 text-yellow-400">
-                                    {[...Array(testimonial.rating)].map((_, i) => (
-                                        <Star key={i} className="h-4 w-4 fill-current" />
-                                    ))}
-                                </div>
-                            </Card>
-                        ))}
+                                </Card>
+                            ))
+                        ) : (
+                            <p className="text-center col-span-4 text-neutral-500">No reviews yet.</p>
+                        )}
                     </div>
                 </div>
             </section>
@@ -427,29 +462,9 @@ export default function HomePage() {
                             postalCode: SITE_CONFIG.address.zip,
                             addressCountry: SITE_CONFIG.address.country,
                         },
-                        openingHoursSpecification: [
-                            {
-                                "@type": "OpeningHoursSpecification",
-                                dayOfWeek: [
-                                    "Monday",
-                                    "Tuesday",
-                                    "Wednesday",
-                                    "Thursday",
-                                    "Friday",
-                                ],
-                                opens: "08:00",
-                                closes: "18:00",
-                            },
-                            {
-                                "@type": "OpeningHoursSpecification",
-                                dayOfWeek: "Saturday",
-                                opens: "09:00",
-                                closes: "15:00",
-                            },
-                        ],
                         priceRange: "₹₹",
                         medicalSpecialty: "Dentistry",
-                        availableService: SERVICES_DATA.map((service) => ({
+                        availableService: activeServices.map((service) => ({
                             "@type": "MedicalProcedure",
                             name: service.title,
                             description: service.description,
