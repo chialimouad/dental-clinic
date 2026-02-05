@@ -35,6 +35,7 @@ export default function BlogAdminPage() {
             excerpt: formData.excerpt,
             content: formData.content,
             author: formData.author,
+            featuredImage: editingPost?.featuredImage || "/images/blog/default.jpg",
             publishedAt: editingPost?.publishedAt || new Date().toISOString(),
             tags: formData.tags.split(",").map((t) => t.trim()),
         };
