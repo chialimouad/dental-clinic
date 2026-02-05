@@ -118,16 +118,11 @@ export default async function HomePage() {
                         <div className="relative hidden lg:block">
                             <div className="relative w-full h-[600px] rounded-3xl overflow-hidden shadow-2xl">
                                 <div className="absolute inset-0 bg-gradient-to-t from-primary-900/50 to-transparent z-10" />
-                                <div className="w-full h-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center">
-                                    {/* Placeholder SVG or maybe a hero image from logic? For now Keep SVG */}
-                                    <svg
-                                        className="w-48 h-48 text-white/50"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2C8.5 2 6 4.5 6 7.5c0 2 1 3.5 2 4.5v8c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-8c1-1 2-2.5 2-4.5C18 4.5 15.5 2 12 2zm0 2c2.5 0 4 2 4 3.5 0 1.5-1 2.5-1.5 3l-.5.5V20h-4v-9l-.5-.5c-.5-.5-1.5-1.5-1.5-3C8 6 9.5 4 12 4z" />
-                                    </svg>
-                                </div>
+                                <img
+                                    src="/hero-image.png"
+                                    alt="Modern Dental Clinic Reception"
+                                    className="w-full h-full object-cover"
+                                />
                             </div>
 
                             {/* Floating Cards */}
